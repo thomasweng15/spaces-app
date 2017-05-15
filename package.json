@@ -15,14 +15,18 @@
     "jade": "~1.9.2",
     "mongoose": "^4.9.9",
     "morgan": "~1.5.3",
+    "node-sass": "^4.5.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
     "serve-favicon": "~2.2.1"
   },
   "devDependencies": {
+    "css-loader": "^0.28.1",
     "mocha": "^3.4.1",
+    "sass-loader": "^6.0.5",
     "should": "^11.2.1",
+    "style-loader": "^0.17.0",
     "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.5"
   }
