@@ -5,8 +5,26 @@ import {
   Route,
   Link,
   Redirect,
-  withRouter
+  withRouter,
+  Switch
 } from 'react-router-dom'
+
+const App = () => (
+  <Router>
+    <div>
+      <WelcomeHeader/>
+      <ul>
+        <li><Link to="/">Home Page</Link></li>
+        <li><Link to="/protected">Protected Page</Link></li>
+      </ul>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route exact path="/login" component={Login}/>
+        <PrivateRoute exact path="/protected" component={Protected}/>
+      </Switch>
+    </div>
+  </Router>
+)
 
 const fakeAuth = {
   isAuthenticated: false,
@@ -20,7 +38,7 @@ const fakeAuth = {
   }
 }
 
-const AuthButton = withRouter(({ history }) => (
+const WelcomeHeader = withRouter(({ history }) => (
   fakeAuth.isAuthenticated ? (
     <p>
       Welcome! <button onClick={() => {
@@ -45,7 +63,7 @@ const PrivateRoute = ({ component: Component }) => (
   )}/>
 )
 
-const Public = () => <h3>Public</h3>
+const Home = () => <h3>Home</h3>
 const Protected = () => <h3>Protected</h3>
 
 class Login extends React.Component {
@@ -71,29 +89,14 @@ class Login extends React.Component {
         <Redirect to={from}/>
       )
     }
-    
+
     return (
       <div>
-        <p>You must log in to view the page at {from.pathname}</p>
+        { from ? <p>You must log in to view the page at {from.pathname}</p> : null }
         <button onClick={this.login}>Log in</button>
       </div>
     )
   }
 }
-
-const App = () => (
-  <Router>
-    <div>
-      <AuthButton/>
-      <ul>
-        <li><Link to="/public">Public Page</Link></li>
-        <li><Link to="/protected">Protected Page</Link></li>
-      </ul>
-      <Route path="/public" component={Public}/>
-      <Route path="/login" component={Login}/>
-      <PrivateRoute path="/protected" component={Protected}/>
-    </div>
-  </Router>
-)
 
 export default App
