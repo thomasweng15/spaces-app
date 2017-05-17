@@ -26,23 +26,21 @@ const App = () => (
   </Router>
 )
 
-const fakeAuth = {
+const authStore = {
   isAuthenticated: false,
-  authenticate(cb) {
+  authenticate() {
     this.isAuthenticated = true
-    setTimeout(cb, 100) // fake async
   },
-  signout(cb) {
+  signout() {
     this.isAuthenticated = false
-    setTimeout(cb, 100)
   }
 }
 
 const WelcomeHeader = withRouter(({ history }) => (
-  fakeAuth.isAuthenticated ? (
+  authStore.isAuthenticated ? (
     <p>
       Welcome! <button onClick={() => {
-        fakeAuth.signout(() => history.push('/'))
+        authStore.signout(() => history.push('/'))
       }}>Sign out</button>
     </p>
   ) : (
@@ -52,7 +50,7 @@ const WelcomeHeader = withRouter(({ history }) => (
 
 const PrivateRoute = ({ component: Component }) => (
   <Route render={props => (
-    fakeAuth.isAuthenticated ? (
+    authStore.isAuthenticated ? (
       <Component {...props}/>
     ) : (
       <Redirect to={{
@@ -66,17 +64,56 @@ const PrivateRoute = ({ component: Component }) => (
 const Home = () => <h3>Home</h3>
 const Protected = () => <h3>Protected</h3>
 
+function requestBuildQueryString(params) {
+  var queryString = [];
+  for(var property in params)
+    if (params.hasOwnProperty(property)) {
+      queryString.push(encodeURIComponent(property) + '=' + encodeURIComponent(params[property]));
+    }
+  return queryString.join('&');
+}
+
+function post(url, data) {
+  return new Promise(function(success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      success();
+    };
+
+    xhr.onerror = error;
+    xhr.open('POST', url);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send(requestBuildQueryString(data));
+  })
+}
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      redirectToReferrer: false
+      redirectToReferrer: false,
+      username: '',
+      password: ''
     }
 
-    this.login = () => {
-      fakeAuth.authenticate(() => {
-        this.setState({ redirectToReferrer: true })
-      })
+    this.userChanged = evt => this.setState({ username: evt.target.value });
+    this.pwChanged = evt => this.setState({ password: evt.target.value });
+
+    this.auth = (evt) => {
+      evt.preventDefault();
+
+      // TODO check for localstorage auth token
+
+      // send in ajax request
+      post('/auth/signin', {username: this.state.username, password: this.state.password})
+        .then((data) => {
+          //  localStorage.token = data.token
+          authStore.authenticate();
+          this.setState({ redirectToReferrer: true })
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
 
@@ -93,7 +130,11 @@ class Login extends React.Component {
     return (
       <div>
         { from ? <p>You must log in to view the page at {from.pathname}</p> : null }
-        <button onClick={this.login}>Log in</button>
+        <form role="form" action="/auth/signin" method="post" onSubmit={this.auth}>
+          <input type="text" name="username" onChange={this.userChanged} value={this.state.username} placeholder="Enter Username" />
+          <input type="password" name="password" onChange={this.pwChanged} value={this.state.password} placeholder="Enter Password" />
+          <button type="submit">Log in</button>
+        </form>
       </div>
     )
   }

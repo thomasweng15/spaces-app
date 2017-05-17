@@ -8,6 +8,15 @@ router.get('/', function (req, res) {
     res.render('index', { user : req.user });
 });
 
+router.post('/auth/signin', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/auth/signout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
