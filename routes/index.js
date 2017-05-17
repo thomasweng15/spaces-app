@@ -8,6 +8,10 @@ router.get('/', function (req, res) {
     res.render('index', { user : req.user });
 });
 
+router.get('/login', function (req, res) {
+    res.render('index', { user : req.user });
+});
+
 router.post('/auth/signin', passport.authenticate('local'), function(req, res) {
     res.redirect('/');
 });

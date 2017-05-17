@@ -8,6 +8,9 @@ import {
   withRouter,
   Switch
 } from 'react-router-dom'
+import RestHelper from '../modules/resthelper.js'
+
+var restHelper = new RestHelper();
 
 const App = () => (
   <Router>
@@ -41,7 +44,7 @@ const WelcomeHeader = withRouter(({ history }) => (
   authStore.isAuthenticated ? (
     <p>
       Welcome! <button onClick={() => {
-        get("auth/signout")
+        restHelper.get("auth/signout")
           .then(() => authStore.signout(() => history.push('/')))
           .catch((err) => console.log(err));
       }}>Sign out</button>
@@ -67,43 +70,6 @@ const PrivateRoute = ({ component: Component }) => (
 const Home = () => <h3>Home</h3>
 const Protected = () => <h3>Protected</h3>
 
-function requestBuildQueryString(params) {
-  var queryString = [];
-  for(var property in params)
-    if (params.hasOwnProperty(property)) {
-      queryString.push(encodeURIComponent(property) + '=' + encodeURIComponent(params[property]));
-    }
-  return queryString.join('&');
-}
-
-function post(url, data) {
-  return new Promise(function(success, error) {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-      success();
-    };
-
-    xhr.onerror = error;
-    xhr.open('POST', url);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send(requestBuildQueryString(data));
-  })
-}
-
-function get(url) {
-  return new Promise(function(success, error) {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-      success();
-    };
-
-    xhr.onerror = error;
-    xhr.open('GET', url);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send();
-  })
-}
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -122,7 +88,7 @@ class Login extends React.Component {
       // TODO check for localstorage auth token
 
       // send in ajax request
-      post('/auth/signin', {username: this.state.username, password: this.state.password})
+      restHelper.post('/auth/signin', {username: this.state.username, password: this.state.password})
         .then((data) => {
           //  localStorage.token = data.token
           authStore.authenticate();
