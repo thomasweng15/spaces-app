@@ -29,10 +29,11 @@ const App = () => (
 const authStore = {
   isAuthenticated: false,
   authenticate() {
-    this.isAuthenticated = true
+    this.isAuthenticated = true;
   },
-  signout() {
-    this.isAuthenticated = false
+  signout(cb) {
+    this.isAuthenticated = false;
+    if (cb) cb();
   }
 }
 
@@ -40,7 +41,9 @@ const WelcomeHeader = withRouter(({ history }) => (
   authStore.isAuthenticated ? (
     <p>
       Welcome! <button onClick={() => {
-        authStore.signout(() => history.push('/'))
+        get("auth/signout")
+          .then(() => authStore.signout(() => history.push('/')))
+          .catch((err) => console.log(err));
       }}>Sign out</button>
     </p>
   ) : (
@@ -84,6 +87,20 @@ function post(url, data) {
     xhr.open('POST', url);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.send(requestBuildQueryString(data));
+  })
+}
+
+function get(url) {
+  return new Promise(function(success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      success();
+    };
+
+    xhr.onerror = error;
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send();
   })
 }
 
