@@ -10,6 +10,23 @@ import {
 } from 'react-router-dom'
 import RestHelper from '../modules/resthelper.js'
 
+import { createStore } from 'redux'
+import auth from '../modules/reducers.js'
+
+// initial state and reducer
+const initialState = {
+  user: userData ? userData.username : null
+}
+
+// store
+let store = createStore(auth, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+
+// Every time the state changes, log it
+// Note that subscribe() returns a function for unregistering the listener
+let unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
+
 var restHelper = new RestHelper();
 
 const App = () => (
@@ -24,28 +41,21 @@ const App = () => (
         <Route exact path="/" component={Home}/>
         <Route exact path="/login" component={Login}/>
         <PrivateRoute exact path="/protected" component={Protected}/>
+        {/* Add error route */}
       </Switch>
     </div>
   </Router>
 )
 
-const authStore = {
-  isAuthenticated: false,
-  authenticate() {
-    this.isAuthenticated = true;
-  },
-  signout(cb) {
-    this.isAuthenticated = false;
-    if (cb) cb();
-  }
-}
-
 const WelcomeHeader = withRouter(({ history }) => (
-  authStore.isAuthenticated ? (
+  store.getState().user ? (
     <p>
       Welcome! <button onClick={() => {
         restHelper.get("auth/signout")
-          .then(() => authStore.signout(() => history.push('/')))
+          .then(() => {
+            store.dispatch({ type: 'SIGNOUT' });
+            () => history.push('/'); // TODO make listener
+          })
           .catch((err) => console.log(err));
       }}>Sign out</button>
     </p>
@@ -56,7 +66,7 @@ const WelcomeHeader = withRouter(({ history }) => (
 
 const PrivateRoute = ({ component: Component }) => (
   <Route render={props => (
-    authStore.isAuthenticated ? (
+    store.getState().user ? (
       <Component {...props}/>
     ) : (
       <Redirect to={{
@@ -91,7 +101,7 @@ class Login extends React.Component {
       restHelper.post('/auth/signin', {username: this.state.username, password: this.state.password})
         .then((data) => {
           //  localStorage.token = data.token
-          authStore.authenticate();
+          store.dispatch({ type: 'AUTHENTICATE', user: this.state.username })
           this.setState({ redirectToReferrer: true })
         })
         .catch((err) => {

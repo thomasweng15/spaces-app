@@ -4,11 +4,7 @@ var Account = require('../models/account');
 var router = express.Router();
 
 
-router.get('/', function (req, res) {
-    res.render('index', { user : req.user });
-});
-
-router.get('/login', function (req, res) {
+router.get(/^\/.*/, function (req, res) {
     res.render('index', { user : req.user });
 });
 

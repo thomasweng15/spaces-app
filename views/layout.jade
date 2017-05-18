@@ -8,4 +8,6 @@ html
     h4.error-msg= error
     br
     block content
-    script(src='./bundle.js')
+    script.
+      var userData = !{JSON.stringify(locals && locals.user ? locals.user : null)}
+    script(src='./bundle.js').
