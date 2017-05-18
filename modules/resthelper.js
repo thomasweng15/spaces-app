@@ -1,5 +1,5 @@
 
-export default class RestHelper {
+class RestHelper {
 
     post(url, data) {
         let self = this;
@@ -44,3 +44,5 @@ export default class RestHelper {
         return queryString.join('&');
     }
 }
+
+export default new RestHelper();
