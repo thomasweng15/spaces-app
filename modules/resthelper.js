@@ -5,11 +5,16 @@ export default class RestHelper {
         let self = this;
         return new Promise(function(success, error) {
             var xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-            success();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState !== XMLHttpRequest.DONE) return;
+
+                if (xhr.status === 200) {
+                    success();
+                }
+                    
+                error(Error());
             };
 
-            xhr.onerror = error;
             xhr.open('POST', url);
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.send(self.requestBuildQueryString(data));

@@ -36,6 +36,13 @@ describe('Account', function() {
         });
     });
 
+    it('fails to find user by username', function(done) {
+        Account.findOne({ username: 'noUser' }, function(err, account) {
+            should.not.exist(account);
+            done();
+        });
+    });
+
     afterEach(function(done) {
         Account.remove({}, function() {
             done();

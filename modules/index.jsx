@@ -12,6 +12,7 @@ import RestHelper from '../modules/resthelper.js'
 
 import { createStore } from 'redux'
 import auth from '../modules/reducers.js'
+import { AUTHENTICATE, SIGNOUT } from '../modules/actions.js'
 
 // initial state and reducer
 const initialState = {
@@ -41,7 +42,7 @@ const App = () => (
         <Route exact path="/" component={Home}/>
         <Route exact path="/login" component={Login}/>
         <PrivateRoute exact path="/protected" component={Protected}/>
-        {/* Add error route */}
+        <Route path="/" component={Err}/>
       </Switch>
     </div>
   </Router>
@@ -53,8 +54,8 @@ const WelcomeHeader = withRouter(({ history }) => (
       Welcome! <button onClick={() => {
         restHelper.get("auth/signout")
           .then(() => {
-            store.dispatch({ type: 'SIGNOUT' });
-            () => history.push('/'); // TODO make listener
+            store.dispatch({ type: SIGNOUT });
+            history.push('/');
           })
           .catch((err) => console.log(err));
       }}>Sign out</button>
@@ -79,6 +80,7 @@ const PrivateRoute = ({ component: Component }) => (
 
 const Home = () => <h3>Home</h3>
 const Protected = () => <h3>Protected</h3>
+const Err = () => <h3>Error 404</h3>
 
 class Login extends React.Component {
   constructor(props) {
@@ -95,13 +97,10 @@ class Login extends React.Component {
     this.auth = (evt) => {
       evt.preventDefault();
 
-      // TODO check for localstorage auth token
-
       // send in ajax request
       restHelper.post('/auth/signin', {username: this.state.username, password: this.state.password})
-        .then((data) => {
-          //  localStorage.token = data.token
-          store.dispatch({ type: 'AUTHENTICATE', user: this.state.username })
+        .then(() => {
+          store.dispatch({ type: AUTHENTICATE, user: this.state.username })
           this.setState({ redirectToReferrer: true })
         })
         .catch((err) => {
