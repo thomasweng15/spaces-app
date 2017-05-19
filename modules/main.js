@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../public/stylesheets/style.scss';
-import App from '../modules/index.jsx';
+import App from '../modules/components/index.jsx';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux'
 import auth from '../modules/reducers.js'

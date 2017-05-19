@@ -1,16 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { SIGNOUT } from '../modules/actions.js'
-import RestHelper from '../modules/resthelper.js'
+import { SIGNOUT } from '../actions.js'
+import RestHelper from '../resthelper.js'
 
 class WelcomeHeader extends React.Component {
     constructor(props) {
         super(props)
 
-        this.signout = () => {
-            this.props.dispatch({ type: SIGNOUT });
-        }
+        this.signout = () => this.props.dispatch({ type: SIGNOUT });
     }
 
     render() {
@@ -20,7 +18,7 @@ class WelcomeHeader extends React.Component {
                     RestHelper.get("auth/signout")
                     .then(() => {
                         this.signout();
-                        this.props.router.push('/');
+                        this.props.history.push('/');
                     })
                     .catch((err) => console.log(err));
                 }}>Sign out</button>

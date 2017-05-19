@@ -7,9 +7,9 @@ import {
   Switch
 } from 'react-router-dom'
 
-import WelcomeHeader from '../modules/welcomeheader.jsx'
-import Login from '../modules/login.jsx'
-import { Protected, PrivateRoute } from '../modules/privateroute.jsx'
+import WelcomeHeader from './welcomeheader.jsx'
+import Login from './login.jsx'
+import { Protected, PrivateRoute } from './privateroute.jsx'
 
 const App = () => (
   <Router>

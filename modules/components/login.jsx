@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import {
   Redirect,
 } from 'react-router-dom'
-import { AUTHENTICATE } from '../modules/actions.js'
-import RestHelper from '../modules/resthelper.js'
+import { AUTHENTICATE } from '../actions.js'
+import RestHelper from '../resthelper.js'
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,12 +15,9 @@ class Login extends React.Component {
       password: ''
     }
 
-    this.userChanged = evt => this.setState({ username: evt.target.value });
-    this.pwChanged = evt => this.setState({ password: evt.target.value });
-
-    this.authenticate = () => {
-      this.props.dispatch({ type: AUTHENTICATE, user: this.state.username })
-    }
+    this.userChanged = evt => this.setState({ username: evt.target.value })
+    this.pwChanged = evt => this.setState({ password: evt.target.value })
+    this.authenticate = () => this.props.dispatch({ type: AUTHENTICATE, user: this.state.username })
 
     this.auth = (evt) => {
       evt.preventDefault();
@@ -42,9 +39,7 @@ class Login extends React.Component {
     const { redirectToReferrer } = this.state
     
     if (redirectToReferrer) {
-      return (
-        <Redirect to={from}/>
-      )
+      return <Redirect to={from}/>
     }
 
     return (
