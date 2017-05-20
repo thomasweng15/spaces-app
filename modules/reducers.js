@@ -1,4 +1,4 @@
-import { AUTHENTICATE, SIGNOUT } from '../modules/actions.js'
+import { AUTHENTICATE, SIGNOUT, SIGNUP } from '../modules/actions.js'
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
@@ -9,6 +9,10 @@ export default function auth(state = initialState, action) {
     case SIGNOUT:
       return Object.assign({}, state, {
         user: null
+      })
+    case SIGNUP:
+      return Object.assign({}, state, {
+        user: action.user
       })
     default:
       return state

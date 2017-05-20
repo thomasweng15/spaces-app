@@ -28,9 +28,7 @@ class Login extends React.Component {
           this.authenticate()
           this.setState({ redirectToReferrer: true })
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     }
   }
 

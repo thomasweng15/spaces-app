@@ -16,6 +16,12 @@ router.get('/auth/signout', function(req, res) {
     res.status(200).send();
 });
 
+router.post('/auth/signup', function(req, res) {
+    // TODO create a user
+
+    res.status(200).send();
+});
+
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });

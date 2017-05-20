@@ -1,38 +1,51 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { SIGNOUT } from '../actions.js'
 import RestHelper from '../resthelper.js'
 
-class WelcomeHeader extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.signout = () => this.props.dispatch({ type: SIGNOUT });
+const Welcome = ({ signedIn, onClick }) => {
+    if (signedIn) {
+        return <p>
+            Welcome! <button onClick={e => {
+                e.preventDefault()
+                onClick()
+            }}>Sign out</button>
+        </p>
     }
 
-    render() {
-        return this.props.user ? (
-            <p>
-                Welcome! <button onClick={() => {
-                    RestHelper.get("auth/signout")
-                    .then(() => {
-                        this.signout();
-                        this.props.history.push('/');
-                    })
-                    .catch((err) => console.log(err));
-                }}>Sign out</button>
-            </p>
-        ) : (
-            <p>You are not logged in.</p>
-        )
-    }
+    return (
+        <p>You are not logged in.</p>
+    )
+}
+
+Welcome.propTypes = {
+    signedIn: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
     return {
-        user: state.user
+        signedIn: state.user != null
     }
 }
 
-module.exports = withRouter(connect(mapStateToProps)(WelcomeHeader))
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onClick: () => {
+            RestHelper.get("auth/signout")
+                .then(() => {
+                    dispatch({ type: SIGNOUT });
+                    ownProps.history.push('/');
+                })
+                .catch((err) => console.log(err));
+        }
+    }
+} 
+
+const WelcomeContainer = withRouter(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Welcome))
+
+export default WelcomeContainer
