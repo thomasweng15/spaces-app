@@ -1,62 +1,45 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import {
-  Redirect,
-} from 'react-router-dom'
-import { AUTHENTICATE } from '../actions.js'
-import RestHelper from '../resthelper.js'
+import React, { PropTypes } from 'react'
+import { Redirect } from 'react-router-dom'
 
 class Login extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      redirectToReferrer: false,
       username: '',
-      password: ''
+      password: '',
+      redirectToReferrer: false,
     }
 
-    this.userChanged = evt => this.setState({ username: evt.target.value })
-    this.pwChanged = evt => this.setState({ password: evt.target.value })
-    this.authenticate = () => this.props.dispatch({ type: AUTHENTICATE, user: this.state.username })
-
-    this.auth = (evt) => {
-      evt.preventDefault();
-
-      // send in ajax request
-      RestHelper.post('/auth/signin', {username: this.state.username, password: this.state.password})
-        .then(() => {
-          this.authenticate()
-          this.setState({ redirectToReferrer: true })
-        })
-        .catch((err) => console.log(err));
+    this.onUsernameChanged = evt => this.setState({ username: evt.target.value })
+    this.onPasswordChanged = evt => this.setState({ password: evt.target.value })
+    this.redirect = () => this.setState({ redirectToReferrer: true });
+    this.authenticate = (e) => {
+      e.preventDefault()
+      this.props.onSubmit(this.state.username, this.state.password, this.redirect)
     }
   }
 
   render() {
     const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { redirectToReferrer } = this.state
-    
+    const { username, password, redirectToReferrer } = this.state
+
     if (redirectToReferrer) {
       return <Redirect to={from}/>
     }
 
-    return (
-      <div>
-        { from ? <p>You must log in to view the page at {from.pathname}</p> : null }
-        <form role="form" action="/auth/signin" method="post" onSubmit={this.auth}>
-          <input type="text" name="username" onChange={this.userChanged} value={this.state.username} placeholder="Enter Username" />
-          <input type="password" name="password" onChange={this.pwChanged} value={this.state.password} placeholder="Enter Password" />
-          <button type="submit">Log in</button>
-        </form>
-      </div>
-    )
+    return <div>
+      { from ? <p>You must log in to view the page at {from.pathname}</p> : null }
+      <form role="form" action="/auth/signin" method="post" onSubmit={e => this.authenticate(e)}>
+        <input type="text" name="username" onChange={this.onUsernameChanged} value={username} placeholder="Enter Username" />
+        <input type="password" name="password" onChange={this.onPasswordChanged} value={password} placeholder="Enter Password" />
+        <button type="submit">Log in</button>
+      </form>
+    </div>
   }
 }
 
-const mapStateToProps = state => {
-    return {
-        user: state.user
-    }
+Login.propTypes = {
+    onSubmit: PropTypes.func.isRequired
 }
 
-module.exports = connect(mapStateToProps)(Login)
+export default Login

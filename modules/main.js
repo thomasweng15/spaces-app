@@ -4,7 +4,7 @@ import '../public/stylesheets/style.scss';
 import App from '../modules/components/index.jsx';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux'
-import auth from '../modules/reducers.js'
+import appReducer from '../modules/reducers.js'
 
 // initial state and reducer
 const initialState = {
@@ -12,7 +12,7 @@ const initialState = {
 }
 
 // store
-let store = createStore(auth, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+let store = createStore(appReducer, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
 // Every time the state changes, log it
 // Note that subscribe() returns a function for unregistering the listener

@@ -8,10 +8,11 @@ import {
   Switch
 } from 'react-router-dom'
 
-import WelcomeContainer from './welcomeheader.jsx'
-import Login from './login.jsx'
-import Register from './register.jsx'
-import { Protected, PrivateRoute } from './privateroute.jsx'
+import WelcomeContainer from '../containers/welcomecontainer.jsx'
+import LoginContainer from '../containers/logincontainer.jsx'
+import RegisterContainer from '../containers/registercontainer.jsx'
+import PrivateRoute from './privateroute.jsx'
+import Protected from './protected.jsx'
 
 class App extends React.Component {
   constructor(props) {
@@ -29,8 +30,8 @@ class App extends React.Component {
         </ul>
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/login" component={Login}/>
-          <Route exact path="/register" component={Register}/>
+          <Route exact path="/login" component={LoginContainer}/>
+          <Route exact path="/register" component={RegisterContainer}/>
           <PrivateRoute exact path="/protected" component={Protected}/>
           <Route path="/" component={Err}/>
         </Switch>

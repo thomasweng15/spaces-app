@@ -1,18 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
-
-const Protected = () => <h3>Protected</h3>
-
-class Wrapper extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-
-    render() {
-      return <Protected {...this.props} />;
-    }
-};
+import Protected from './protected.jsx'
 
 class PrivateRoute extends React.Component {
     constructor(props) {
@@ -22,7 +11,7 @@ class PrivateRoute extends React.Component {
     render() {
         return <Route render={props => (
             this.props.user ? (
-                <Wrapper props={this.props.component}/>
+                <Protected props={this.props.component}/>
             ) : (
                 <Redirect to={{
                     pathname: '/login',
@@ -39,7 +28,4 @@ const mapStateToProps = state => {
     }
 }
 
-module.exports = {
-    PrivateRoute: connect(mapStateToProps)(PrivateRoute),
-    Protected: Protected
-}
+module.exports = connect(mapStateToProps)(PrivateRoute)

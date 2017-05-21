@@ -1,6 +1,6 @@
 import { AUTHENTICATE, SIGNOUT, SIGNUP } from '../modules/actions.js'
 
-export default function auth(state = initialState, action) {
+export default function appReducer(state = initialState, action) {
   switch (action.type) {
     case AUTHENTICATE:
       return Object.assign({}, state, {
