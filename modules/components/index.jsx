@@ -13,6 +13,8 @@ import LoginContainer from '../containers/logincontainer.jsx'
 import RegisterContainer from '../containers/registercontainer.jsx'
 import PrivateRoute from './privateroute.jsx'
 import Protected from './protected.jsx'
+import Home from './home.jsx'
+import Err from './error.jsx'
 
 class App extends React.Component {
   constructor(props) {
@@ -20,12 +22,14 @@ class App extends React.Component {
   }
 
   render() {
+    const { user } = this.props
+
     return <Router>
       <div>
         <WelcomeContainer/>
         <ul>
           <li><Link to="/">Home Page</Link></li>
-          <li><Link to="/register">Register</Link></li>
+          { user == null ? <li><Link to="/register">Register</Link></li> : null }
           <li><Link to="/protected">Protected Page</Link></li>
         </ul>
         <Switch>
@@ -45,8 +49,5 @@ const mapStateToProps = state => {
         user: state.user
     }
 }
-
-const Home = () => <h3>Home</h3>
-const Err = () => <h3>Error 404</h3>
 
 export default connect(mapStateToProps)(App)

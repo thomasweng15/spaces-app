@@ -12,11 +12,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        onSubmit: (username, password, redirect) => {
+        onSubmit: (username, password) => {
           RestHelper.post('/auth/signup', {username: username, password: password})
           .then(() => {
             dispatch({ type: SIGNUP, user: username })
-            redirect()
           })
           .catch((err) => console.log(err));
         }

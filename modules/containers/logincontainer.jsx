@@ -5,17 +5,16 @@ import Login from '../components/login.jsx'
 
 const mapStateToProps = state => {
     return {
-        user: state.user
+        signedIn: state.user != null
     }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        onSubmit: (username, password, redirect) => {
+        onSubmit: (username, password) => {
           RestHelper.post('/auth/signin', {username: username, password: password})
           .then(() => {
             dispatch({ type: AUTHENTICATE, user: username })
-            redirect()
           })
           .catch((err) => console.log(err));
         }

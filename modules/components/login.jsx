@@ -6,13 +6,11 @@ class Login extends React.Component {
     super(props)
     this.state = {
       username: '',
-      password: '',
-      redirectToReferrer: false,
+      password: ''
     }
 
     this.onUsernameChanged = evt => this.setState({ username: evt.target.value })
     this.onPasswordChanged = evt => this.setState({ password: evt.target.value })
-    this.redirect = () => this.setState({ redirectToReferrer: true });
     this.authenticate = (e) => {
       e.preventDefault()
       this.props.onSubmit(this.state.username, this.state.password, this.redirect)
@@ -20,10 +18,11 @@ class Login extends React.Component {
   }
 
   render() {
+    const {signedIn } = this.props
     const { from } = this.props.location.state || { from: { pathname: '/' } }
     const { username, password, redirectToReferrer } = this.state
 
-    if (redirectToReferrer) {
+    if (signedIn) {
       return <Redirect to={from}/>
     }
 
@@ -39,7 +38,8 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-    onSubmit: PropTypes.func.isRequired
+  signedIn: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired
 }
 
 export default Login

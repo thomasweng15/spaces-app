@@ -6,13 +6,11 @@ class Register extends React.Component {
         super(props)
         this.state = {
             username: '',
-            password: '',
-            redirect: false
+            password: ''
         }
 
         this.usernameChanged = evt => this.setState({ username: evt.target.value })
         this.passwordChanged = evt => this.setState({ password: evt.target.value })
-        this.redirect = () => this.setState({ redirect: true })
         this.register = (e) => {
             e.preventDefault()
             this.props.onSubmit(this.state.username, this.state.password, this.redirect)
@@ -20,9 +18,10 @@ class Register extends React.Component {
     }
 
     render() {
-        const { username, password, redirect } = this.state
+        const { signedIn } = this.props
+        const { username, password } = this.state
 
-        if (redirect) {
+        if (signedIn) {
             return <Redirect to={{ pathname: '/' }}/>
         }
 
