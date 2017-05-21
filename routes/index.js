@@ -16,10 +16,17 @@ router.get('/auth/signout', function(req, res) {
     res.status(200).send();
 });
 
-router.post('/auth/signup', function(req, res) {
-    // TODO create a user
+router.post('/auth/signup', function(req, res, next) {
+    Account.register(new Account({username: req.body.username}), req.body.password, function(err) {
+    if (err) {
+      console.log('error while user register!', err);
+      return next(err);
+    }
+
+    console.log('user registered!');
 
     res.status(200).send();
+  });
 });
 
 router.get('/ping', function(req, res){
